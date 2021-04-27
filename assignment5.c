@@ -67,12 +67,14 @@ char getSelection(){
  * Function prompts the user for a course number.
  * Then takes that course number and uses it to set the cursor poistion to (courseNumber * sizeof(COURSE))
  * @param courseFile A pointer to the courses.dat file that the program is working with
+ * @return An integer the represents the course number
  */
-void setSeekPosition(FILE* courseFile){
+int setSeekPosition(FILE* courseFile){
     printf("Enter a course number: ");
     fgets(inputBuffer, sizeof(inputBuffer), stdin);
-    fseek(courseFile, (sizeof(COURSE) * (strtol(inputBuffer, NULL, 0) - 1)), SEEK_SET);
-    return;
+    int courseNum = strtol(inputBuffer, NULL, 0);
+    fseek(courseFile, (sizeof(COURSE) * ( courseNum- 1)), SEEK_SET);
+    return courseNum;
 }
 
 /**
@@ -81,11 +83,12 @@ void setSeekPosition(FILE* courseFile){
  * @param course A pointer to a course struct
  * @return A boolean that indicates whether or not the course exists
  */
-bool courseExists(COURSE* course){
+bool courseExists(COURSE *course){
     return true; //! Just here to test
 }
 
 /**
+ * TODO: check if course exists and return error if true
  * Function prompts the user for input and fills the course struct with it.
  * Once all input is recived it writes the struct to the courses.dat file.
  * @param courseFile A pointer to the courses.dat file that the program is working with
@@ -119,30 +122,33 @@ void createRecord(FILE* courseFile){
 
 /**
  * TODO: Fix Formatting of the output
+ * TODO: check if course exists and return error if false
  * Function extracts the course struct from the file and outputs the data to the terminal.
  * @param courseFile A pointer to the courses.dat file that the program is working with
  */
 void readRecord(FILE* courseFile){
     //Malloc the course struct and set our cursor position using the course number as a index
     COURSE *course=malloc(sizeof(COURSE));
-    setSeekPosition(courseFile);
+    int courseNum = setSeekPosition(courseFile);
 
     //Read memory location and rebuild the course struct
     fread(course, sizeof(COURSE), 1, courseFile);
     
     //TODO: Fix formatting
     //Print the course struct to the terminal
-    printf("%s\n", course->name);
-    printf("%s\n", course->schedule);
-    printf("%d\n", course->hours);
-    printf("%d\n", course->size);
+    printf("Course number: %d\n", courseNum);
+    printf("Course name: %s\n", course->name);
+    printf("Scheduled days: %s\n", course->schedule);
+    printf("Credit hours: %d\n", course->hours);
+    printf("Enrolled students: %d\n", course->size);
 
     //Be freee little memory!!
     free(course);
 }
 
 /**
- * 
+ * TODO: Implement function
+ * TODO: check if course exists and return error if false
  * @param courseFile A pointer to the courses.dat file that the program is working with
  */
 void updateRecord(FILE* courseFile){
@@ -154,7 +160,8 @@ void updateRecord(FILE* courseFile){
 }
 
 /**
- * 
+ * TODO: Implement function
+ * TODO: check if course exists and return error if false
  * @param courseFile A pointer to the courses.dat file that the program is working with
  */
 void deleteRecord(FILE* courseFile){

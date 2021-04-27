@@ -5,7 +5,7 @@
 #include <ctype.h>
 
 char getSelection();
-void setSeekPosition(FILE* courseFile);
+int setSeekPosition(FILE* courseFile);
 bool courseExists(COURSE *course);
 void createRecord(FILE* courseFile);
 void readRecord(FILE* courseFile);
