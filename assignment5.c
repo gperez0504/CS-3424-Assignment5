@@ -55,19 +55,20 @@ char getSelection(){
 }
 
 void setSeekPosition(FILE* courseFile){
-    //TODO course seems to stay at teh begining of the file. 
-    //Possibly wrong fopen tag or something wrong with seek offset.
     printf("Enter a course number: ");
     fgets(inputBuffer, sizeof(inputBuffer), stdin);
-    fseek(courseFile, (sizeof(COURSE) * (inputBuffer[0] - 1)), SEEK_SET);
+    fseek(courseFile, (sizeof(COURSE) * (strtol(inputBuffer, NULL, 0) - 1)), SEEK_SET);
     return;
 }
 
-void createRecord(FILE* courseFile){
-    //TODO course.dat is way smaller than it should be after being written to
+bool courseExists(){
     
+}
+
+void createRecord(FILE* courseFile){
     //Malloc the course struct and set our cursor position using the course number as a index
     COURSE *course=malloc(sizeof(COURSE));
+    memset(course, 0, sizeof(COURSE));
     setSeekPosition(courseFile);
 
     //Prompt user for course data and store it in the struct
@@ -79,12 +80,10 @@ void createRecord(FILE* courseFile){
     strcpy(course->schedule, inputBuffer);
     printf("Enter course credit hours: ");
     fgets(inputBuffer, sizeof(inputBuffer), stdin);
-    course->hours = inputBuffer[0];
-    //TODO Might have to flush inputBuffer here
+    course->hours = strtol(inputBuffer, NULL, 0);
     printf("Enter student enrollment: ");
     fgets(inputBuffer, sizeof(inputBuffer), stdin);
-    course->size = inputBuffer[0];
-    //TODO Might have to flush inputBuffer here
+    course->size = strtol(inputBuffer, NULL, 0);
 
     //Now write the course to the file
     fwrite(course, sizeof(COURSE), 1, courseFile);
@@ -94,18 +93,14 @@ void createRecord(FILE* courseFile){
 }
 
 void readRecord(FILE* courseFile){
-    /* TODO
-    Figure out why the file writing is slightly off and we have uninitialized values.
-    Check to make sure that createRecord is writing properly.
-    */
-    
     //Malloc the course struct and set our cursor position using the course number as a index
     COURSE *course=malloc(sizeof(COURSE));
     setSeekPosition(courseFile);
 
     //Read memory location and rebuild the course struct
     fread(course, sizeof(COURSE), 1, courseFile);
-
+    
+    //TODO: Fix formatting
     //Print the course struct to the terminal
     printf("%s\n", course->name);
     printf("%s\n", course->schedule);
