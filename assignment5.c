@@ -10,8 +10,12 @@ int main(int argc, char *argv[]){
     if(courseFile == NULL){
         courseFile = fopen("courses.dat", "wb+");
     }
+
+    //Keep prompting the user for input until CTRL-D
+    //Might be a better way of doing this
     while(!feof(stdin)){
         char selection = getSelection();
+        //If CTRL-D is detected, fall into this statment
         if(feof(stdin)){
             puts("\nCTRL-D detected. Goodbye.");
             fclose(courseFile);
@@ -41,6 +45,11 @@ int main(int argc, char *argv[]){
     }
 }
 
+/**
+ * Function displays main menu and prompt the user for a selection.
+ * Then takes the selection and sets it to lower case to be used in the switch statment.
+ * @return A lowercase A-Z character
+ */
 char getSelection(){
     //Display menu
     puts("\nEnter one of the following actions or type CTRL-D to exit.");
@@ -54,6 +63,11 @@ char getSelection(){
     return tolower(inputBuffer[0]);
 }
 
+/**
+ * Function prompts the user for a course number.
+ * Then takes that course number and uses it to set the cursor poistion to (courseNumber * sizeof(COURSE))
+ * @param courseFile A pointer to the courses.dat file that the program is working with
+ */
 void setSeekPosition(FILE* courseFile){
     printf("Enter a course number: ");
     fgets(inputBuffer, sizeof(inputBuffer), stdin);
@@ -61,10 +75,21 @@ void setSeekPosition(FILE* courseFile){
     return;
 }
 
-bool courseExists(){
-    
+/**
+ * TODO: Fill in the function
+ * Function checks the hours section of a course struct is zero and returns true if it is non-zero
+ * @param course A pointer to a course struct
+ * @return A boolean that indicates whether or not the course exists
+ */
+bool courseExists(COURSE* course){
+    return true; //! Just here to test
 }
 
+/**
+ * Function prompts the user for input and fills the course struct with it.
+ * Once all input is recived it writes the struct to the courses.dat file.
+ * @param courseFile A pointer to the courses.dat file that the program is working with
+ */
 void createRecord(FILE* courseFile){
     //Malloc the course struct and set our cursor position using the course number as a index
     COURSE *course=malloc(sizeof(COURSE));
@@ -92,6 +117,11 @@ void createRecord(FILE* courseFile){
     free(course);
 }
 
+/**
+ * TODO: Fix Formatting of the output
+ * Function extracts the course struct from the file and outputs the data to the terminal.
+ * @param courseFile A pointer to the courses.dat file that the program is working with
+ */
 void readRecord(FILE* courseFile){
     //Malloc the course struct and set our cursor position using the course number as a index
     COURSE *course=malloc(sizeof(COURSE));
@@ -111,6 +141,10 @@ void readRecord(FILE* courseFile){
     free(course);
 }
 
+/**
+ * 
+ * @param courseFile A pointer to the courses.dat file that the program is working with
+ */
 void updateRecord(FILE* courseFile){
     COURSE *course=malloc(sizeof(COURSE));
     setSeekPosition(courseFile);
@@ -119,6 +153,10 @@ void updateRecord(FILE* courseFile){
     free(course);
 }
 
+/**
+ * 
+ * @param courseFile A pointer to the courses.dat file that the program is working with
+ */
 void deleteRecord(FILE* courseFile){
     //Just set hours feild to zero
     COURSE *course=malloc(sizeof(COURSE));
