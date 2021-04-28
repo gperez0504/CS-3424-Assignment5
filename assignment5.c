@@ -88,6 +88,7 @@ int setSeekPosition(FILE* courseFile){
 
 /**
  * ? Can this be changed to get course and return a pointer to a course struct if course can be found?
+ * ? seekSet() can be nested inside here if it switches to returning the course number if found and a -1 if not
  * Function checks the hours section of a course struct is zero and returns true if it is non-zero.
  * @param course A pointer to a course struct.
  * @return A boolean that indicates whether or not the course exists.
@@ -97,10 +98,10 @@ bool courseExists(FILE* courseFile){
     fseek(courseFile, 84, SEEK_CUR);
     size_t freadReturn = fread(&courseHours, sizeof(unsigned), 1, courseFile);
     fseek(courseFile, -84, SEEK_CUR);
-    if((courseHours == (unsigned)0) || (freadReturn = 0)){
-        return false;
+    if((freadReturn != 0) && (courseHours != 0)){
+        return true;
     }
-    return true;
+    return false;
 }
 
 /**
@@ -178,7 +179,7 @@ void updateRecord(FILE* courseFile){
     //Check if course exists
     if(courseExists(courseFile)){
         COURSE *course=malloc(sizeof(COURSE));
-        fread(&course, sizeof(COURSE), 1, courseFile);
+        fread(course, sizeof(COURSE), 1, courseFile);
 
         //Be freeee little memory!!!
         free(course);
@@ -202,7 +203,7 @@ void deleteRecord(FILE* courseFile){
         fseek(courseFile, -(sizeof(COURSE)), SEEK_CUR);
 
         //Set course hours to 0 and write the "deleted" struct back to memory
-        memset(course, (unsigned)0, sizeof(COURSE));
+        memset(course, 0, sizeof(COURSE));
         fwrite(course, sizeof(COURSE), 1, courseFile);
 
         //Be freeeee little memory!!!!
