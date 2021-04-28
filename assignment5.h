@@ -6,7 +6,7 @@
 
 char getSelection();
 int setSeekPosition(FILE* courseFile);
-bool courseExists(int hours);
+bool courseExists(FILE* courseFile);
 void createRecord(FILE* courseFile);
 void readRecord(FILE* courseFile);
 void updateRecord(FILE* courseFile);
